@@ -1,0 +1,49 @@
+# Executáveis e bibliotecas compiladas
+*.exe
+*.out
+*.app
+*.o
+*.obj
+*.a
+*.lib
+*.so
+*.dylib
+
+# Diretórios de Build comuns
+build/
+bin/
+obj/
+cmake-build-debug/
+cmake-build-release/
+out/
+
+# IDEs e Editores
+# Visual Studio
+.vs/
+*.vcxproj.user
+*.suo
+
+# VS Code
+.vscode/
+
+# CLion / JetBrains
+.idea/
+
+# Sistema Operacional
+.DS_Store
+Thumbs.db
+
+# Visual Studio - Pastas de cache e configuração
+.vs/
+*.user
+*.suo
+
+# Compilação e Binários
+x64/
+Debug/
+Release/
+*.exe
+*.obj
+*.pdb
+*.ilk
+*.idb
