@@ -1,0 +1,4 @@
+Session #1502
+
+Avg Fps: 44.6
+Apx Dev: 12.7844

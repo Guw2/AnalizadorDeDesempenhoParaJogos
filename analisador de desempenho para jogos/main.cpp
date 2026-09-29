@@ -4,23 +4,26 @@
 #include <chrono>
 #include <cmath>
 #include <cstdint>
+#include <filesystem>
+#include <fstream>
+#include <iterator>
+#include <numeric>
 
 // máximo de fps no mock
 #define MAX_MOCK_FPS_ARRAY 5
 
+struct Metrics {
+	double avgFps;
+	double desApx;
+};
+
 // mostra métricas
-void showMetrics(const int fps[]) {
+std::vector<double> showMetrics(const int fps[]) {
 	// para não acontecer divisão por zero
-	if (MAX_MOCK_FPS_ARRAY == 0) { return; }
+	if (MAX_MOCK_FPS_ARRAY == 0) { return {}; }
 
-	double fpsMedio = 0.0;
+	const double fpsMedio = std::accumulate(fps, fps+MAX_MOCK_FPS_ARRAY, 0.0) / MAX_MOCK_FPS_ARRAY;
 	double somaDosQuadrados = 0.0;
-
-	for (int i = 0; i < MAX_MOCK_FPS_ARRAY; i++) {
-		fpsMedio += fps[i];
-	}
-
-	fpsMedio /= MAX_MOCK_FPS_ARRAY;
 
 	for (int i = 0; i < MAX_MOCK_FPS_ARRAY; i++) {
 		double diferenca = fps[i] - fpsMedio;
@@ -29,8 +32,9 @@ void showMetrics(const int fps[]) {
 
 	const double desvioAprox = std::sqrt(somaDosQuadrados / MAX_MOCK_FPS_ARRAY);
 
-	std::cout << "Media de FPS: " << fpsMedio << std::endl;
-	std::cout << "Desvio Aproximado: " << desvioAprox << std::endl;
+	const std::vector<double> finalMetrics = {fpsMedio, desvioAprox};
+
+	return finalMetrics;
 }
 
 void showFps(const int fps[]) {
@@ -58,6 +62,14 @@ int main() {
 	uint32_t session = 1502;
 	std::cout << "Session: #" << session << "\n\n";
 
+	std::filesystem::path reports = "reports";
+
+	if (!std::filesystem::exists(reports)) {
+		std::filesystem::create_directory(reports);
+
+		std::cout << "Pasta de reports criada" << std::endl;
+	}
+
 	// mock de medições de fps feitas pelo programa no jogo
 	int fps[MAX_MOCK_FPS_ARRAY] = { 47, 32, 61, 28, 55 };
 
@@ -67,7 +79,7 @@ int main() {
 	// marca o início do sort
 	auto inicio = std::chrono::high_resolution_clock::now();
 
-	std::sort(fps, fps + 5);
+	std::sort(std::begin(fps), std::end(fps));
 
 	// marca o fim do sort
 	auto fim = std::chrono::high_resolution_clock::now();
@@ -80,8 +92,30 @@ int main() {
 
 	std::cout << std::endl;
 
-	showMetrics(fps);
+	std::vector<double> metricsList = showMetrics(fps);
+	Metrics metrics;
+
+	metrics.avgFps = metricsList[0];
+	metrics.desApx = metricsList[1];
+
+	std::cout << std::fixed << std::setprecision(2);
+
+	std::cout << "Fps medio: " << metrics.avgFps << std::endl;
+	std::cout << "Desvio aproximado: " << metrics.desApx << std::endl;
+
 	std::cout << "Duracao de ordenacao: " << duracao.count() << "ns\n";
+
+	std::filesystem::path reportFile = reports / "report.txt";
+
+	std::ofstream file(reportFile);
+
+	if (file.is_open()) {
+		file << "Session #" << session << "\n\n";
+		file << "Avg Fps: " << metrics.avgFps << "\n";
+		file << "Apx Dev: " << metrics.desApx << "\n";
+
+		file.close();
+	}
 
 	return 0;
 }
