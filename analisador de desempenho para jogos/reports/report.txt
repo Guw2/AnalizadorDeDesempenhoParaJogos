@@ -1,4 +1,7 @@
-Session #1502
+Session: #1502
 
-Avg Fps: 44.6
-Apx Dev: 12.7844
+Game: The Witness
+Modo Teste: 720p s/ Vsync
+Fps medio: 44.60
+Desvio aproximado: 12.78
+Duracao de ordenacao: 17800ns

@@ -8,6 +8,8 @@
 #include <fstream>
 #include <iterator>
 #include <numeric>
+#include <sstream>
+#include <vector>
 
 // máximo de fps no mock
 #define MAX_MOCK_FPS_ARRAY 5
@@ -18,11 +20,11 @@ struct Metrics {
 };
 
 // mostra métricas
-std::vector<double> showMetrics(const int fps[]) {
+std::vector<double> showMetrics(const std::vector<int>& fps) {
 	// para não acontecer divisão por zero
 	if (MAX_MOCK_FPS_ARRAY == 0) { return {}; }
 
-	const double fpsMedio = std::accumulate(fps, fps+MAX_MOCK_FPS_ARRAY, 0.0) / MAX_MOCK_FPS_ARRAY;
+	const double fpsMedio = std::accumulate(std::begin(fps), std::end(fps), 0.0) / MAX_MOCK_FPS_ARRAY;
 	double somaDosQuadrados = 0.0;
 
 	for (int i = 0; i < MAX_MOCK_FPS_ARRAY; i++) {
@@ -37,7 +39,7 @@ std::vector<double> showMetrics(const int fps[]) {
 	return finalMetrics;
 }
 
-void showFps(const int fps[]) {
+void showFps(const std::vector<int>& fps) {
 	
 	std::atomic<int> count = 0;
 
@@ -60,7 +62,9 @@ void showFps(const int fps[]) {
 int main() {
 
 	uint32_t session = 1502;
-	std::cout << "Session: #" << session << "\n\n";
+
+	std::string game = "The Witness";
+	std::string testMode = "720p s/ Vsync";
 
 	std::filesystem::path reports = "reports";
 
@@ -71,7 +75,7 @@ int main() {
 	}
 
 	// mock de medições de fps feitas pelo programa no jogo
-	int fps[MAX_MOCK_FPS_ARRAY] = { 47, 32, 61, 28, 55 };
+	std::vector<int> fps = { 47, 32, 61, 28, 55 };
 
 	std::cout << "FPS antes da ordenacao: ";
 	showFps(fps);
@@ -98,21 +102,29 @@ int main() {
 	metrics.avgFps = metricsList[0];
 	metrics.desApx = metricsList[1];
 
-	std::cout << std::fixed << std::setprecision(2);
+	std::ostringstream report;
 
-	std::cout << "Fps medio: " << metrics.avgFps << std::endl;
-	std::cout << "Desvio aproximado: " << metrics.desApx << std::endl;
+	report << "Session: #" << session << "\n\n";
 
-	std::cout << "Duracao de ordenacao: " << duracao.count() << "ns\n";
+	report << "Game: " << game << std::endl;
+	report << "Modo Teste: " << testMode << std::endl;
 
+	report << std::fixed << std::setprecision(2);
+
+	report << "Fps medio: " << metrics.avgFps << std::endl;
+	report << "Desvio aproximado: " << metrics.desApx << std::endl;
+
+	report << "Duracao de ordenacao: " << duracao.count() << "ns\n";
+
+	std::string reportString = report.str();
 	std::filesystem::path reportFile = reports / "report.txt";
 
 	std::ofstream file(reportFile);
 
+	std::cout << reportString << std::endl;
+
 	if (file.is_open()) {
-		file << "Session #" << session << "\n\n";
-		file << "Avg Fps: " << metrics.avgFps << "\n";
-		file << "Apx Dev: " << metrics.desApx << "\n";
+		file << reportString;	
 
 		file.close();
 	}
