@@ -2,7 +2,6 @@
 #include "Metrics.h"
 #include "Report.h"
 
-#include <chrono>
 #include <cstdint>
 #include <filesystem>
 #include <iostream>
@@ -11,73 +10,39 @@
 
 int main()
 {
-    std::uint32_t session = 1502;
+    const std::uint32_t session = 1503;
 
-    std::string game =
-        "The Witness";
+    const std::string testName =
+        "CPU workload";
 
-    std::string testMode =
-        "720p s/ Vsync";
-
-    std::filesystem::path reports =
+    const std::filesystem::path reports =
         "reports";
 
     createReportsFolder(reports);
 
-    // mock de medições de fps feitas pelo programa no jogo
-    std::vector<int> fps = {
-        47,
-        32,
-        61,
-        28,
-        55
-    };
-
     std::cout
-        << "FPS antes da ordenacao: ";
+        << "Iniciando coleta...\n\n";
 
-    showFps(fps);
+    std::vector<double> samples =
+        collectSamples(20);
 
-    // início do sort
-    auto inicio =
-        std::chrono::steady_clock::now();
+    showSamples(samples);
 
-    sortFps(fps);
+    const Metrics metrics =
+        calculateMetrics(samples);
 
-    // fim do sort
-    auto fim =
-        std::chrono::steady_clock::now();
-
-    std::cout
-        << "FPS depois da ordenacao: ";
-
-    showFps(fps);
-
-    // calcula tempo de sort
-    auto duracao =
-        std::chrono::duration_cast<
-        std::chrono::nanoseconds
-        >(
-            fim - inicio
-        );
-
-    Metrics metrics =
-        calculateMetrics(fps);
-
-    std::string report =
+    const std::string report =
         createReport(
             session,
-            game,
-            testMode,
-            metrics,
-            duracao
+            testName,
+            metrics
         );
 
-    std::filesystem::path reportFile =
+    const std::filesystem::path reportFile =
         reports / "report.txt";
 
     std::cout
-        << "\n"
+        << "\n--- REPORT ---\n"
         << report
         << "\n";
 

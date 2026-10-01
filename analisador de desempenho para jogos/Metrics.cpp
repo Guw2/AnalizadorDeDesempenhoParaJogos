@@ -1,26 +1,60 @@
 #include "Metrics.h"
 
+#include <algorithm>
 #include <cmath>
 #include <numeric>
 
-Metrics calculateMetrics(std::vector<int>& fps) {
-	if (fps.empty()) {
-		return {};
-	}
+Metrics calculateMetrics(
+    const std::vector<double>& samples
+)
+{
+    if (samples.empty())
+    {
+        return {};
+    }
 
-	const double avgFps = std::accumulate(std::begin(fps), std::end(fps), 0.0) / fps.size();
+    const double soma =
+        std::accumulate(
+            samples.begin(),
+            samples.end(),
+            0.0
+        );
 
-	double somaFrames = 0.0;
+    const double media =
+        soma / samples.size();
 
-	for (int value : fps) {
-		const double diff = value - avgFps;
+    const double minimo =
+        *std::min_element(
+            samples.begin(),
+            samples.end()
+        );
 
-		somaFrames += std::pow(diff, 2);
-	}
+    const double maximo =
+        *std::max_element(
+            samples.begin(),
+            samples.end()
+        );
 
-	const double desAprox = std::sqrt(somaFrames / fps.size());
+    double somaDosQuadrados = 0.0;
 
-	return {
-		avgFps, desAprox
-	};
+    for (double valor : samples)
+    {
+        const double diferenca =
+            valor - media;
+
+        somaDosQuadrados +=
+            diferenca * diferenca;
+    }
+
+    const double desvioAprox =
+        std::sqrt(
+            somaDosQuadrados / samples.size()
+        );
+
+    return {
+        media,
+        minimo,
+        maximo,
+        desvioAprox
+    };
 }

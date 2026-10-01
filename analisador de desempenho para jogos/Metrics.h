@@ -2,10 +2,14 @@
 
 #include <vector>
 
-// strcut para agrupar valores relacionados a métrica
-struct Metrics {
-	double avgFps = 0.0;
-	double desApx = 0.0;
+struct Metrics
+{
+    double avgMs = 0.0;
+    double minMs = 0.0;
+    double maxMs = 0.0;
+    double desApx = 0.0;
 };
 
-Metrics calculateMetrics(std::vector<int>& fps);
+Metrics calculateMetrics(
+    const std::vector<double>& samples
+);

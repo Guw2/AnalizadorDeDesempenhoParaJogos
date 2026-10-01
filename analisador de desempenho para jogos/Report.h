@@ -2,17 +2,14 @@
 
 #include "Metrics.h"
 
-#include <chrono>
 #include <cstdint>
 #include <filesystem>
 #include <string>
 
 std::string createReport(
     std::uint32_t session,
-    const std::string& game,
-    const std::string& testMode,
-    const Metrics& metrics,
-    std::chrono::nanoseconds sortDuration
+    const std::string& testName,
+    const Metrics& metrics
 );
 
 void createReportsFolder(

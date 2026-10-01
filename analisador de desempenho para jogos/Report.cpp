@@ -20,13 +20,15 @@ void createReportsFolder(
 
 std::string createReport(
     std::uint32_t session,
-    const std::string& game,
-    const std::string& testMode,
-    const Metrics& metrics,
-    std::chrono::nanoseconds sortDuration
+    const std::string& testName,
+    const Metrics& metrics
 )
 {
     std::ostringstream report;
+
+    report
+        << std::fixed
+        << std::setprecision(3);
 
     report
         << "Session: #"
@@ -34,33 +36,29 @@ std::string createReport(
         << "\n\n";
 
     report
-        << "Game: "
-        << game
-        << "\n";
+        << "Teste: "
+        << testName
+        << "\n\n";
 
     report
-        << "Modo Teste: "
-        << testMode
-        << "\n";
+        << "Tempo medio: "
+        << metrics.avgMs
+        << " ms\n";
 
     report
-        << std::fixed
-        << std::setprecision(2);
+        << "Menor tempo: "
+        << metrics.minMs
+        << " ms\n";
 
     report
-        << "Fps medio: "
-        << metrics.avgFps
-        << "\n";
+        << "Maior tempo: "
+        << metrics.maxMs
+        << " ms\n";
 
     report
         << "Desvio aproximado: "
         << metrics.desApx
-        << "\n";
-
-    report
-        << "Duracao de ordenacao: "
-        << sortDuration.count()
-        << "ns\n";
+        << " ms\n";
 
     return report.str();
 }

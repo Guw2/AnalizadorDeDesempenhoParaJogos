@@ -1,7 +1,8 @@
-Session: #1502
+Session: #1503
 
-Game: The Witness
-Modo Teste: 720p s/ Vsync
-Fps medio: 44.60
-Desvio aproximado: 12.78
-Duracao de ordenacao: 17800ns
+Teste: CPU workload
+
+Tempo medio: 1.792 ms
+Menor tempo: 1.781 ms
+Maior tempo: 1.858 ms
+Desvio aproximado: 0.018 ms

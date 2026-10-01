@@ -1,7 +1,12 @@
 #pragma once
 
+#include <cstddef>
 #include <vector>
 
-void showFps(const std::vector<int>& fps);
+std::vector<double> collectSamples(
+    std::size_t sampleCount
+);
 
-void sortFps(std::vector<int>& fps);
+void showSamples(
+    const std::vector<double>& samples
+);
