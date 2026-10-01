@@ -3,7 +3,6 @@
 #include <algorithm>
 #include <chrono>
 #include <iostream>
-#include <numeric>
 #include <vector>
 
 namespace
@@ -11,8 +10,6 @@ namespace
     using clock_type =
         std::chrono::steady_clock;
 
-
-    // isso aq força o processador a trabalhar e gerar latência entre as execuções
     void runWorkload()
     {
         std::vector<int> numbers = {
@@ -44,27 +41,27 @@ namespace
 }
 
 std::vector<double> collectSamples(
-    std::size_t sampleCount
+    std::chrono::milliseconds windowDuration
 )
 {
     std::vector<double> samples;
 
-    samples.reserve(sampleCount);
+    const auto windowStart =
+        clock_type::now();
 
-    for (std::size_t i = 0; i < sampleCount; ++i)
+    while (clock_type::now() - windowStart < windowDuration)
     {
-        const auto start =
+        const auto sampleStart =
             clock_type::now();
 
         runWorkload();
 
-        const auto end =
+        const auto sampleEnd =
             clock_type::now();
 
-        // coletando duração sem o cast usado anteriormente
         const auto duration =
             std::chrono::duration<double, std::milli>(
-                end - start
+                sampleEnd - sampleStart
             );
 
         samples.push_back(
@@ -88,4 +85,9 @@ void showSamples(
             << samples[i]
             << " ms\n";
     }
+
+    std::cout
+        << "\nTotal de amostras: "
+        << samples.size()
+        << "\n";
 }

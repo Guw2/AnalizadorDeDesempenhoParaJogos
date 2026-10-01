@@ -1,10 +1,10 @@
 #pragma once
 
-#include <cstddef>
+#include <chrono>
 #include <vector>
 
 std::vector<double> collectSamples(
-    std::size_t sampleCount
+    std::chrono::milliseconds windowDuration
 );
 
 void showSamples(

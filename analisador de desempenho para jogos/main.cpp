@@ -2,6 +2,7 @@
 #include "Metrics.h"
 #include "Report.h"
 
+#include <chrono>
 #include <cstdint>
 #include <filesystem>
 #include <iostream>
@@ -10,10 +11,10 @@
 
 int main()
 {
-    const std::uint32_t session = 1503;
+    const std::uint32_t session = 1504;
 
     const std::string testName =
-        "CPU workload";
+        "CPU workload - janela de 1 segundo";
 
     const std::filesystem::path reports =
         "reports";
@@ -21,10 +22,12 @@ int main()
     createReportsFolder(reports);
 
     std::cout
-        << "Iniciando coleta...\n\n";
+        << "Iniciando coleta por 1 segundo...\n\n";
 
     std::vector<double> samples =
-        collectSamples(20);
+        collectSamples(
+            std::chrono::milliseconds(1000)
+        );
 
     showSamples(samples);
 

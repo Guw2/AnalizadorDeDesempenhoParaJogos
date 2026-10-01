@@ -1,8 +1,8 @@
-Session: #1503
+Session: #1504
 
-Teste: CPU workload
+Teste: CPU workload - janela de 1 segundo
 
 Tempo medio: 1.792 ms
-Menor tempo: 1.781 ms
-Maior tempo: 1.858 ms
-Desvio aproximado: 0.018 ms
+Menor tempo: 1.784 ms
+Maior tempo: 1.845 ms
+Desvio aproximado: 0.006 ms
