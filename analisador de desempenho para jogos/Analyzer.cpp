@@ -40,16 +40,19 @@ namespace
     }
 }
 
-std::vector<double> collectSamples(
+SampleWindow collectSamples(
     std::chrono::milliseconds windowDuration
 )
 {
-    std::vector<double> samples;
+    SampleWindow window;
 
     const auto windowStart =
         clock_type::now();
 
-    while (clock_type::now() - windowStart < windowDuration)
+    while (
+        clock_type::now() - windowStart
+        < windowDuration
+        )
     {
         const auto sampleStart =
             clock_type::now();
@@ -64,12 +67,25 @@ std::vector<double> collectSamples(
                 sampleEnd - sampleStart
             );
 
-        samples.push_back(
+        window.samples.push_back(
             duration.count()
         );
+
+        window.sampleCount++;
     }
 
-    return samples;
+    const auto windowEnd =
+        clock_type::now();
+
+    const auto elapsed =
+        std::chrono::duration<double, std::milli>(
+            windowEnd - windowStart
+        );
+
+    window.elapsedMs =
+        elapsed.count();
+
+    return window;
 }
 
 void showSamples(
@@ -85,9 +101,4 @@ void showSamples(
             << samples[i]
             << " ms\n";
     }
-
-    std::cout
-        << "\nTotal de amostras: "
-        << samples.size()
-        << "\n";
 }

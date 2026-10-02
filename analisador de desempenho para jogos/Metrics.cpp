@@ -5,10 +5,12 @@
 #include <numeric>
 
 Metrics calculateMetrics(
-    const std::vector<double>& samples
+    const std::vector<double>& samples,
+    std::uint64_t sampleCount,
+    double elapsedMs
 )
 {
-    if (samples.empty())
+    if (samples.empty() || elapsedMs <= 0.0)
     {
         return {};
     }
@@ -51,10 +53,17 @@ Metrics calculateMetrics(
             somaDosQuadrados / samples.size()
         );
 
+    const double segundos =
+        elapsedMs / 1000.0;
+
+    const double samplesPerSecond =
+        sampleCount / segundos;
+
     return {
         media,
         minimo,
         maximo,
-        desvioAprox
+        desvioAprox,
+        samplesPerSecond
     };
 }

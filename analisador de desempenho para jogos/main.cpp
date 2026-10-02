@@ -24,15 +24,31 @@ int main()
     std::cout
         << "Iniciando coleta por 1 segundo...\n\n";
 
-    std::vector<double> samples =
+    SampleWindow window =
         collectSamples(
             std::chrono::milliseconds(1000)
         );
 
-    showSamples(samples);
+    showSamples(
+        window.samples
+    );
 
     const Metrics metrics =
-        calculateMetrics(samples);
+        calculateMetrics(
+            window.samples,
+            window.sampleCount,
+            window.elapsedMs
+        );
+
+    std::cout
+        << "\nAmostras coletadas: "
+        << window.sampleCount
+        << "\n";
+
+    std::cout
+        << "Duracao real da janela: "
+        << window.elapsedMs
+        << " ms\n";
 
     const std::string report =
         createReport(

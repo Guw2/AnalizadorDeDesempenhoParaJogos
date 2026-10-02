@@ -60,6 +60,11 @@ std::string createReport(
         << metrics.desApx
         << " ms\n";
 
+    report
+        << "Amostras por segundo: "
+        << metrics.samplesPerSecond
+        << "\n";
+
     return report.str();
 }
 

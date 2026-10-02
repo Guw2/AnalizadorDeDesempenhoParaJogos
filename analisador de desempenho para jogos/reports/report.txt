@@ -2,7 +2,8 @@ Session: #1504
 
 Teste: CPU workload - janela de 1 segundo
 
-Tempo medio: 1.792 ms
-Menor tempo: 1.784 ms
-Maior tempo: 1.845 ms
-Desvio aproximado: 0.006 ms
+Tempo medio: 1.798 ms
+Menor tempo: 1.786 ms
+Maior tempo: 3.346 ms
+Desvio aproximado: 0.072 ms
+Amostras por segundo: 555.896

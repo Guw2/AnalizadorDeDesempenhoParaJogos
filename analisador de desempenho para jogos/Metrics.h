@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstdint>
 #include <vector>
 
 struct Metrics
@@ -8,8 +9,12 @@ struct Metrics
     double minMs = 0.0;
     double maxMs = 0.0;
     double desApx = 0.0;
+
+    double samplesPerSecond = 0.0;
 };
 
 Metrics calculateMetrics(
-    const std::vector<double>& samples
+    const std::vector<double>& samples,
+    std::uint64_t sampleCount,
+    double elapsedMs
 );
