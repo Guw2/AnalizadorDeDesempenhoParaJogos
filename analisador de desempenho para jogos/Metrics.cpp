@@ -4,66 +4,72 @@
 #include <cmath>
 #include <numeric>
 
-Metrics calculateMetrics(
-    const std::vector<double>& samples,
-    std::uint64_t sampleCount,
-    double elapsedMs
-)
+Metrics calculateMetrics(const SampleWindow& window)
 {
-    if (samples.empty() || elapsedMs <= 0.0)
+    if (window.samplesMs.empty() || window.elapsedMs <= 0.0)
     {
         return {};
     }
 
-    const double soma =
+    const double sum =
         std::accumulate(
-            samples.begin(),
-            samples.end(),
+            window.samplesMs.begin(),
+            window.samplesMs.end(),
             0.0
         );
 
-    const double media =
-        soma / samples.size();
+    const double average =
+        sum / window.samplesMs.size();
 
-    const double minimo =
+    const double minimum =
         *std::min_element(
-            samples.begin(),
-            samples.end()
+            window.samplesMs.begin(),
+            window.samplesMs.end()
         );
 
-    const double maximo =
+    const double maximum =
         *std::max_element(
-            samples.begin(),
-            samples.end()
+            window.samplesMs.begin(),
+            window.samplesMs.end()
         );
 
-    double somaDosQuadrados = 0.0;
+    double squaredDifferenceSum = 0.0;
 
-    for (double valor : samples)
+    for (double value : window.samplesMs)
     {
-        const double diferenca =
-            valor - media;
-
-        somaDosQuadrados +=
-            diferenca * diferenca;
+        const double difference = value - average;
+        squaredDifferenceSum += difference * difference;
     }
 
-    const double desvioAprox =
+    const double deviation =
         std::sqrt(
-            somaDosQuadrados / samples.size()
+            squaredDifferenceSum /
+            window.samplesMs.size()
         );
 
-    const double segundos =
-        elapsedMs / 1000.0;
+    const double elapsedSeconds =
+        window.elapsedMs / 1000.0;
 
     const double samplesPerSecond =
-        sampleCount / segundos;
+        window.sampleCount / elapsedSeconds;
+
+    const double theoreticalSamplesPerSecond =
+        average > 0.0
+        ? 1000.0 / average
+        : 0.0;
+
+    const double efficiencyPercent =
+        theoreticalSamplesPerSecond > 0.0
+        ? (samplesPerSecond / theoreticalSamplesPerSecond) * 100.0
+        : 0.0;
 
     return {
-        media,
-        minimo,
-        maximo,
-        desvioAprox,
-        samplesPerSecond
+        average,
+        minimum,
+        maximum,
+        deviation,
+        samplesPerSecond,
+        theoreticalSamplesPerSecond,
+        efficiencyPercent
     };
 }

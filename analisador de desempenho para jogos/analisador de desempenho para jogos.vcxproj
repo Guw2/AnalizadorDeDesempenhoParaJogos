@@ -128,11 +128,15 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Metrics.cpp" />
     <ClCompile Include="Report.cpp" />
+    <ClCompile Include="Session.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Analyzer.h" />
     <ClInclude Include="Metrics.h" />
+    <ClInclude Include="Models.h" />
     <ClInclude Include="Report.h" />
+    <ClInclude Include="Session.h" />
+    <ClInclude Include="WindowResult.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

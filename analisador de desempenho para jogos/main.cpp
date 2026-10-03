@@ -1,74 +1,58 @@
-#include "Analyzer.h"
-#include "Metrics.h"
+#include "Models.h"
 #include "Report.h"
+#include "Session.h"
 
-#include <chrono>
 #include <cstdint>
 #include <filesystem>
 #include <iostream>
-#include <string>
-#include <vector>
 
 int main()
 {
-    const std::uint32_t session = 1504;
+    const SessionInfo sessionInfo{
+        1506,
+        "CPU workload - multi window"
+    };
 
-    const std::string testName =
-        "CPU workload - janela de 1 segundo";
+    const AnalyzerConfig config{
+        std::chrono::milliseconds(1000),
+        3,
+        1000
+    };
 
-    const std::filesystem::path reports =
-        "reports";
+    const std::filesystem::path reportsFolder = "reports";
 
-    createReportsFolder(reports);
+    createReportsFolder(reportsFolder);
 
-    std::cout
-        << "Iniciando coleta por 1 segundo...\n\n";
+    std::cout << "Iniciando sessao #" << sessionInfo.id << "...\n";
+    std::cout << "Janelas: " << config.windowCount << "\n";
+    std::cout << "Duracao por janela: "
+        << config.windowDuration.count()
+        << " ms\n\n";
 
-    SampleWindow window =
-        collectSamples(
-            std::chrono::milliseconds(1000)
+    const SessionResult session = runSession(config);
+
+    const std::string textReport =
+        buildTextReport(
+            sessionInfo,
+            config,
+            session
         );
 
-    showSamples(
-        window.samples
+    std::cout << textReport << '\n';
+
+    saveTextReport(
+        reportsFolder / "report.txt",
+        textReport
     );
 
-    const Metrics metrics =
-        calculateMetrics(
-            window.samples,
-            window.sampleCount,
-            window.elapsedMs
-        );
-
-    std::cout
-        << "\nAmostras coletadas: "
-        << window.sampleCount
-        << "\n";
-
-    std::cout
-        << "Duracao real da janela: "
-        << window.elapsedMs
-        << " ms\n";
-
-    const std::string report =
-        createReport(
-            session,
-            testName,
-            metrics
-        );
-
-    const std::filesystem::path reportFile =
-        reports / "report.txt";
-
-    std::cout
-        << "\n--- REPORT ---\n"
-        << report
-        << "\n";
-
-    saveReport(
-        reportFile,
-        report
+    saveCsvReport(
+        reportsFolder / "windows.csv",
+        session
     );
+
+    std::cout << "Reports salvos em: "
+        << std::filesystem::absolute(reportsFolder)
+        << '\n';
 
     return 0;
 }

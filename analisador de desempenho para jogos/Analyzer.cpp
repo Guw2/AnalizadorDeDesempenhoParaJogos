@@ -1,18 +1,19 @@
 #include "Analyzer.h"
 
 #include <algorithm>
+#include <array>
 #include <chrono>
-#include <iostream>
-#include <vector>
+#include <cstdint>
 
 namespace
 {
-    using clock_type =
-        std::chrono::steady_clock;
+    using clock_type = std::chrono::steady_clock;
 
-    void runWorkload()
+    volatile std::uint64_t g_workloadSink = 0;
+
+    void runWorkload(std::uint32_t iterations)
     {
-        std::vector<int> numbers = {
+        std::array<int, 10> numbers = {
             923,
             15,
             742,
@@ -25,80 +26,46 @@ namespace
             518
         };
 
-        for (int i = 0; i < 1000; ++i)
+        for (std::uint32_t i = 0; i < iterations; ++i)
         {
-            std::sort(
-                numbers.begin(),
-                numbers.end()
-            );
+            std::sort(numbers.begin(), numbers.end());
+            std::reverse(numbers.begin(), numbers.end());
 
-            std::reverse(
-                numbers.begin(),
-                numbers.end()
-            );
+            // Impede o compilador de considerar o workload completamente descartavel.
+            g_workloadSink ^= numbers.front();
         }
     }
 }
 
-SampleWindow collectSamples(
-    std::chrono::milliseconds windowDuration
-)
+SampleWindow collectWindow(const AnalyzerConfig& config)
 {
-    SampleWindow window;
+    SampleWindow result;
 
-    const auto windowStart =
-        clock_type::now();
+    const auto windowStart = clock_type::now();
 
-    while (
-        clock_type::now() - windowStart
-        < windowDuration
-        )
+    while (clock_type::now() - windowStart < config.windowDuration)
     {
-        const auto sampleStart =
-            clock_type::now();
+        const auto sampleStart = clock_type::now();
 
-        runWorkload();
+        runWorkload(config.workloadIterations);
 
-        const auto sampleEnd =
-            clock_type::now();
+        const auto sampleEnd = clock_type::now();
 
-        const auto duration =
+        const auto sampleDuration =
             std::chrono::duration<double, std::milli>(
                 sampleEnd - sampleStart
             );
 
-        window.samples.push_back(
-            duration.count()
-        );
-
-        window.sampleCount++;
+        result.samplesMs.push_back(sampleDuration.count());
+        result.sampleCount++;
     }
 
-    const auto windowEnd =
-        clock_type::now();
+    const auto windowEnd = clock_type::now();
 
-    const auto elapsed =
+    result.elapsedMs =
         std::chrono::duration<double, std::milli>(
             windowEnd - windowStart
-        );
+        ).count();
 
-    window.elapsedMs =
-        elapsed.count();
-
-    return window;
-}
-
-void showSamples(
-    const std::vector<double>& samples
-)
-{
-    for (std::size_t i = 0; i < samples.size(); ++i)
-    {
-        std::cout
-            << "Amostra "
-            << i + 1
-            << ": "
-            << samples[i]
-            << " ms\n";
-    }
+    return result;
 }

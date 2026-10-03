@@ -1,9 +1,44 @@
-Session: #1504
+Session: #1506
+Teste: CPU workload - multi window
+Janelas: 3
+Duracao alvo por janela: 1000 ms
 
-Teste: CPU workload - janela de 1 segundo
+--- Janela 1 ---
+Duracao real: 1000.097 ms
+Amostras: 872
+Tempo medio: 1.146 ms
+Menor tempo: 1.101 ms
+Maior tempo: 1.480 ms
+Desvio: 0.016 ms
+Taxa real: 871.915 amostras/s
+Taxa teorica: 872.367 amostras/s
+Eficiencia: 99.948%
 
-Tempo medio: 1.798 ms
-Menor tempo: 1.786 ms
-Maior tempo: 3.346 ms
-Desvio aproximado: 0.072 ms
-Amostras por segundo: 555.896
+--- Janela 2 ---
+Duracao real: 1000.268 ms
+Amostras: 872
+Tempo medio: 1.147 ms
+Menor tempo: 1.105 ms
+Maior tempo: 1.431 ms
+Desvio: 0.015 ms
+Taxa real: 871.767 amostras/s
+Taxa teorica: 872.186 amostras/s
+Eficiencia: 99.952%
+
+--- Janela 3 ---
+Duracao real: 1000.793 ms
+Amostras: 871
+Tempo medio: 1.148 ms
+Menor tempo: 1.105 ms
+Maior tempo: 1.473 ms
+Desvio: 0.017 ms
+Taxa real: 870.310 amostras/s
+Taxa teorica: 870.758 amostras/s
+Eficiencia: 99.949%
+
+=== Resumo da sessao ===
+Total de amostras: 2615
+Tempo total observado: 3001.157 ms
+Tempo medio global: 1.147 ms
+Melhor janela: #1
+Pior janela: #3

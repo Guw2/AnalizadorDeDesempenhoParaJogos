@@ -27,6 +27,9 @@
     <ClCompile Include="Analyzer.cpp">
       <Filter>Resource Files</Filter>
     </ClCompile>
+    <ClCompile Include="Session.cpp">
+      <Filter>Resource Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Metrics.h">
@@ -36,6 +39,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Analyzer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WindowResult.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Models.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Session.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
